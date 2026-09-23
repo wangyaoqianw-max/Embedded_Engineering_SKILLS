@@ -1,0 +1,7 @@
+Historical sample only; this is not the output of a build of the current fixture.
+
+Target 'Debug'
+compiling oscillator_config.c...
+Core/Src/oscillator_config.c(42): error: #20: identifier "BOARD_CLOCK_HZ" is undefined
+Core/Src/oscillator_config.c: 1 error, 0 warnings
+Build failed.

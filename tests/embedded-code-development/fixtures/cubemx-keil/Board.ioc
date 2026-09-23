@@ -1,0 +1,10 @@
+#MicroXplorer Configuration settings - do not modify
+Mcu.Family=STM32F4
+Mcu.Name=STM32F407VGTx
+Mcu.Package=LQFP100
+Mcu.UserName=Board
+ProjectManager.ProjectName=Board
+ProjectManager.ProjectFileName=Board.ioc
+ProjectManager.ToolChain=MDK-ARM V5
+ProjectManager.Keil5GeneratedFiles=1
+ProjectManager.KeilArmToolchainLocation=

@@ -1,0 +1,7 @@
+Historical sample only; this is not the output of a build of the current fixture.
+
+Target 'Debug'
+compiling main.c...
+Error: failed to write build/keil-debug/objects/main.o: Invalid argument
+No compiler source location or C diagnostic was emitted.
+Build failed.
