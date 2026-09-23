@@ -1,0 +1,8 @@
+#ifndef APP_CONFIG_H
+#define APP_CONFIG_H
+
+#define UART_RX_BACKEND_POLLING 1
+#define UART_RX_BACKEND_DMA 2
+#define UART_RX_BACKEND UART_RX_BACKEND_DMA
+
+#endif
