@@ -27,6 +27,34 @@ Must not:
 - Claim that the fixture performs actual DMA or parses received data.
 - Invent a build-selected path that is not represented in the fixture.
 
+## CORE-02 Bootloader trial and rollback state flow
+
+Use `scenario-bootloader.md` with `fixtures/bootloader-state/` and write a source-reading note.
+
+Must cover:
+
+- How the latest Metadata copy is selected using its commit marker, CRC, and sequence.
+- Candidate validation and installation before `PENDING -> TRIAL` and application jump.
+- How Application confirmation promotes the pending slot to confirmed and clears pending state.
+- Why an unconfirmed `TRIAL` enters rollback on the next Bootloader entry, regardless of the logged reset-cause value.
+- Confirmed-image validation and `TRIAL -> ROLLBACK` before destructive restore.
+- How an interrupted pending install remains on the pending path at the next boot, and how an interrupted rollback retries restoration.
+- Failure branches that halt rather than claiming installation or rollback succeeded.
+- Checked source paths and line numbers; platform power-loss behavior remains unverified.
+
+Must not:
+
+- Claim the fixture performs actual EEPROM/Flash operations or proves hardware power-fail durability.
+- Treat reset-cause logging as a state-selection condition.
+- Modify fixture sources.
+
+Baseline execution:
+
+- 2026-09-23: CORE-02 run without the Skill; see `baseline-bootloader-output.md`.
+- Observed omissions: Metadata double-copy selection and retrying installation after a reset before the `TRIAL` commit.
+- 2026-09-23: CORE-02 run with the updated Skill; see `after-bootloader-output.md`.
+- Forward review covered all required state-selection, commit-order, retry, failure, evidence, and hardware-boundary criteria; all 31 source references resolve within the fixture. The two baseline omissions are covered.
+
 ## TRIGGER-01 Explicit invocation
 
 Request `$embedded-code-reader` and ask it to explain an existing embedded module's configuration, initialization, runtime flow, data/state changes, or source-reading order. It should apply the Skill and create/update only the requested Markdown note.
@@ -65,4 +93,5 @@ Ask what UART DMA or a callback means without asking to analyze an existing proj
 - 2026-09-23: CORE-01 run with the Skill by an isolated evaluator; see `after-output.md`. The note includes line references, an ordered reading path, configuration/callback/state tracing, and explicit unknowns. The evaluator wrote only the requested note; fixture sources remained unchanged.
 - 2026-09-23: Explicit invocation was exercised by directing an isolated evaluator to load this Skill and apply the scenario. The requested note was produced.
 - 2026-09-23: Trigger-boundary review used the frontmatter description only. The concrete implicit source-reading request was classified as applicable; direct coding, GCC build, HardFault diagnosis, concept explanation, and bounds/race review were classified as non-triggers. A request for a note with no target is applicable when the current project is known to be embedded; the Skill asks for the missing target.
+- 2026-09-23: Rechecked trigger cases after CORE-02 changes. Explicit and implicit source-reading requests remain applicable; a missing target prompts a question when embedded-project context is established. Direct code changes, build/flash, debugging, code review, and concept-only requests remain non-triggers. The frontmatter trigger description was unchanged in this change set.
 - Limitation: these are isolated prompt reviews, not runtime auto-discovery through a Codex-installed Skill. The repository source was not linked into a user-level Skill directory, so platform-level explicit/implicit discovery remains unverified.
