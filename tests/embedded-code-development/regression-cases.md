@@ -105,6 +105,41 @@ Must not observe:
 - Splitting a tightly coupled state machine across concurrent writers.
 - Delegating work merely to increase parallelism.
 
+## CODEGRAPH-01 Existing project index
+
+Run CORE-01 in a project that already has `.codegraph/`.
+
+Must observe:
+
+- Before source search, reading, or editing, query `codegraph_explore` with the target project path in `projectPath` when the MCP tool is available; otherwise run `codegraph explore` from the target project directory.
+- Use returned symbols and relationships to locate callers, dependencies, and likely change impact; verify the implementation scope against returned source and the project configuration/files needed for the edit.
+- Keep the requested change minimal and preserve the current project-specific build and verification workflow.
+- Leave the existing index unchanged and keep all trigger boundaries unchanged.
+
+Must not observe:
+
+- Treating an indexed edge as proof of runtime behavior.
+- Treating CodeGraph as a substitute for the prescribed pre-edit Keil baseline, build, or requested verification.
+- Running `codegraph init` or creating an index automatically.
+
+## CODEGRAPH-02 Project without an index
+
+Run CORE-01 in the supplied CubeMX/Keil fixture without `.codegraph/`.
+
+Must observe:
+
+- Skip CodeGraph and use the existing project-guided exploration workflow.
+- Preserve the prescribed Keil pre-edit baseline, project synchronization, and final build checks.
+- Leave `.codegraph/` absent and keep all trigger boundaries unchanged.
+
+Must not observe:
+
+- Running `codegraph init` or creating an index automatically.
+
+Baseline check before change:
+
+- 2026-09-24: No CodeGraph guidance or regression case existed. Neither this Skills repository nor the supplied CubeMX/Keil fixture has `.codegraph/`, so the indexed-project path was unavailable for live exercise; no index was created.
+
 ## TRIGGER-01 Explicit invocation
 
 Explicitly request embedded-code-development for a bounded code implementation in the fixture. It should enter the implementation workflow.

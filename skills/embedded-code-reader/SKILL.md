@@ -27,6 +27,8 @@ description: Use when analyzing existing embedded firmware source code (嵌入�
 
 按目标逐步扩展阅读范围，避免无目标地遍历或逐个阅读整个工程。
 
+开始定位源码前，先检查目标工程根目录是否已有 `.codegraph/`。如果已有索引，在搜索或阅读源码前优先用可用的 `codegraph_explore` 查询目标符号、调用关系或数据流，并将目标工程路径传给 MCP 的 `projectPath` 参数；MCP 工具不可用时，在目标工程目录使用 `codegraph explore`。用返回的源码和行号核实候选关系，只补读 CodeGraph 未覆盖但结论所需的工程配置或其他文件。若没有索引，跳过 CodeGraph，继续定向阅读；不要自动运行 `codegraph init`。
+
 1. 查看适用的项目指导（如 `AGENTS.md`）、README、目录结构、工程入口或相关项目说明，获取解释目标所需的最少上下文；将文档中的行为描述与源码和工程配置核对。
 2. 搜索目标相关接口、类型、宏、实现和引用，先定位候选文件，再阅读相关实现。
 3. 从启动入口和公开接口向下追踪初始化与运行路径；记录直接调用关系。

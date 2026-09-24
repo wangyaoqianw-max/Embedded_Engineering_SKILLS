@@ -15,6 +15,8 @@ description: Use when implementing, modifying, integrating, or porting code in a
 
 ## 开发流程
 
+开始定位或准备修改目标代码前，先检查目标工程根目录是否已有 `.codegraph/`。若已有，在源码搜索、阅读或编辑前优先用可用的 `codegraph_explore` 查询相关符号、调用方、依赖与影响范围，并将目标工程路径传给 MCP 的 `projectPath` 参数；MCP 工具不可用时，在目标工程目录使用 `codegraph explore`。用返回源码和关系结果缩小检查范围，并核对实施所需的项目配置与工程文件；只补读 CodeGraph 未覆盖的必要材料。若无索引，跳过 CodeGraph 并按现有流程探索；不要运行 `codegraph init` 或创建索引。CodeGraph 不能替代构建和任务要求的验证。
+
 1. 阅读适用的 AGENTS.md、README、设计与构建规范，检查相关源码、调用方、配置、工程文件和当前变更。只扩展到支撑本次任务的范围。
 2. 按当前用户要求、目标工程事实与规范、已确认设计、可访问的项目代码规范、Skill 通用建议的顺序解决冲突。C 代码规范优先查 Embedded_Engineering_Library 中的唯一维护版本；不复制到本 Skill。
 3. 对刚由 CubeMX 生成且已有 Keil 工程文件的项目，按 [Keil 工程接入与构建基线](references/project-build-integration.md) 检查并初始化本地规范要求的 Keil 配置，再在修改应用代码前建立首次构建基线。此 Skill 负责工程接入配置；不从空目录创建 Keil 工程，也不猜测芯片、Target、链接布局或工具链。

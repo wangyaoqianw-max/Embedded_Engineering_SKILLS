@@ -55,6 +55,37 @@ Baseline execution:
 - 2026-09-23: CORE-02 run with the updated Skill; see `after-bootloader-output.md`.
 - Forward review covered all required state-selection, commit-order, retry, failure, evidence, and hardware-boundary criteria; all 31 source references resolve within the fixture. The two baseline omissions are covered.
 
+## CODEGRAPH-01 Indexed project
+
+In a project that already has `.codegraph/`, ask for a source-reading note about a feature with a multi-file call or data flow.
+
+Must:
+
+- Query `codegraph_explore` before source search or reading with the target project path in `projectPath` when the MCP tool is available; otherwise run `codegraph explore` from the target project directory.
+- Use the result to locate relevant symbols and candidate relationships, then verify key claims against source and active project configuration.
+- Preserve the existing source-reference, runtime-registration, and unknown-behavior requirements.
+- Leave the existing index and project source unchanged.
+- Keep explicit/implicit source-reading triggers and non-trigger boundaries unchanged.
+
+Must not:
+
+- Treat an indexed edge as proof that a callback, ISR, task, or conditional branch executes at runtime.
+- Run `codegraph init` or create an index automatically.
+
+## CODEGRAPH-02 Project without an index
+
+Use an existing fixture or project without `.codegraph/` for a normal source-reading request.
+
+Must:
+
+- Skip CodeGraph and follow the existing targeted source-reading workflow.
+- Leave `.codegraph/` absent and avoid unrelated repository-wide searches.
+- Keep explicit/implicit source-reading triggers and non-trigger boundaries unchanged.
+
+Baseline check before change:
+
+- 2026-09-24: No CodeGraph guidance or regression case existed. This Skills repository has no `.codegraph/`, so the indexed-project path was unavailable for live exercise; no index was created.
+
 ## TRIGGER-01 Explicit invocation
 
 Request `$embedded-code-reader` and ask it to explain an existing embedded module's configuration, initialization, runtime flow, data/state changes, or source-reading order. It should apply the Skill and create/update only the requested Markdown note.
