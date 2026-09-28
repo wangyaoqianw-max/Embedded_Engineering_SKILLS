@@ -23,6 +23,78 @@
 |安装、恢复前置校验与内部 APP 写入|`src/installer.c`：`candidate_prevalidate()`、`confirmed_prevalidate()`、`installer_install_pending()`、`installer_restore_confirmed()`|`src/installer.c:3-60`|
 |双副本选择与状态提交|`src/metadata.c`：`metadata_load_latest()`、`metadata_commit_transition()` 及公开提交函数|`src/metadata.c:9-101`|
 
+## 静态结构图
+
+```mermaid
+classDiagram
+    class boot_state_t {
+        <<enum>>
+        BOOT_STATE_NONE
+        BOOT_STATE_PENDING
+        BOOT_STATE_TRIAL
+        BOOT_STATE_ROLLBACK
+    }
+    class firmware_slot_t {
+        <<enum>>
+        SLOT_NONE
+        SLOT_A
+        SLOT_B
+    }
+    class boot_metadata_t {
+        <<struct>>
+        uint32_t sequence
+        boot_state_t state
+        firmware_slot_t confirmed_slot
+        firmware_slot_t pending_slot
+    }
+    class boot_image_t {
+        <<struct>>
+        firmware_slot_t source_slot
+        uint32_t image_size
+        uint32_t payload_crc
+    }
+    class boot_main_c {
+        <<module>>
+        boot_main_run() void
+    }
+    class installer_c {
+        <<module>>
+        candidate_prevalidate(const boot_metadata_t*, boot_image_t*) bool
+        confirmed_prevalidate(const boot_metadata_t*, boot_image_t*) bool
+        installer_install_pending(const boot_metadata_t*, boot_image_t*) bool
+        installer_restore_confirmed(const boot_metadata_t*, boot_image_t*) bool
+    }
+    class metadata_c {
+        <<module>>
+        metadata_load_latest(boot_metadata_t*) bool
+        metadata_commit_trial(firmware_slot_t) bool
+        metadata_commit_rollback_begin() bool
+        metadata_commit_rollback_complete() bool
+        metadata_confirm_application() bool
+    }
+
+    boot_main_c ..> metadata_c : 调用元数据接口
+    boot_main_c ..> installer_c : 经本地辅助函数调用安装接口
+    boot_main_c ..> boot_metadata_t : 使用元数据
+    boot_main_c ..> boot_image_t : 创建候选和确认镜像
+    installer_c ..> boot_metadata_t : 函数参数
+    installer_c ..> boot_image_t : 函数参数
+    metadata_c ..> boot_metadata_t : 读取并提交记录
+    metadata_c ..> boot_state_t : 状态转换
+    metadata_c ..> firmware_slot_t : 槽位转换
+```
+
+|图中节点或关系|源码证据|
+|---|---|
+|`boot_state_t`、`firmware_slot_t`|`include/boot_metadata.h:7-18`|
+|`boot_metadata_t`、`boot_image_t` 及字段|`include/boot_metadata.h:20-31`|
+|`boot_main_c` 入口|`src/boot_main.c:10`|
+|`installer_c` 的函数定义及调用方声明|`src/installer.c:3-4,18-19,34-35,48-49`；`src/boot_main.c:82-85`|
+|`metadata_c` 的公开函数|声明：`include/boot_metadata.h:33-37`；实现：`src/metadata.c:9-29,53-101`|
+|`boot_main_c` 到元数据和安装器模块|`src/boot_main.c:16,22,25,31,51-73`|
+|模块与元数据、镜像类型的依赖|`src/boot_main.c:12,51-62`；`src/installer.c:3-4,18-19,34-35,48-49`；`src/metadata.c:9-14,32-50,53-101`|
+|元数据模块对状态和槽位类型的依赖|`src/metadata.c:32-35,53-88`|
+
 ## 配置与初始化
 
 fixture 没有构建配置或条件编译分支可用于确认目标槽、Flash 布局或平台实现。启动时直接加载元数据，并由 `metadata.state` 选择路径；`boot_metadata.h:7-12` 定义 `NONE`、`PENDING`、`TRIAL`、`ROLLBACK` 四种状态。`boot_main_run()` 读取并记录复位原因，但记录函数为空桩，读取函数固定返回 `0U`，且该值不参与状态分支（`src/boot_main.c:13-20,76-79`）。

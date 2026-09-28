@@ -25,6 +25,51 @@
 |DMA 回调注册和中断分发|`src/dma.c` / `dma_set_rx_done_callback`、`DMA1_Channel5_IRQHandler`|`tests/embedded-code-reader/fixtures/uart-dma/src/dma.c:3-9,17-22`|
 |通知接口声明|`include/task_api.h` / `xTaskNotifyFromISR`、`ulTaskNotifyTake`|`tests/embedded-code-reader/fixtures/uart-dma/include/task_api.h:4-6`|
 
+## 静态结构图
+
+```mermaid
+classDiagram
+    class uart_state_t {
+        <<enum>>
+        UART_IDLE
+        UART_RECEIVING
+        UART_DATA_READY
+        UART_ERROR
+    }
+    class dma_rx_done_callback_t {
+        <<callback>>
+    }
+    class uart_service_c {
+        <<module>>
+        uart_state_t state
+        uart_service_start() void
+        uart_dma_rx_done(size_t transferred) void
+        uart_rx_task(void* argument) void
+    }
+    class dma_c {
+        <<module>>
+        dma_rx_done_callback_t rx_done_callback
+        dma_set_rx_done_callback(dma_rx_done_callback_t callback) void
+        dma_start_rx(void* buffer, size_t capacity) void
+        DMA1_Channel5_IRQHandler() void
+    }
+
+    uart_service_c ..> dma_c : 启动接收并注册回调
+    dma_c ..> uart_service_c : 分发已注册回调
+    uart_service_c ..> dma_rx_done_callback_t : 注册接口的参数类型
+    dma_c ..> dma_rx_done_callback_t : 保存回调指针
+```
+
+|图中节点或关系|源码证据|
+|---|---|
+|`uart_state_t`|`tests/embedded-code-reader/fixtures/uart-dma/src/uart_service.c:5-12`|
+|`dma_rx_done_callback_t` 及 DMA 声明|`tests/embedded-code-reader/fixtures/uart-dma/include/dma.h:6-10`|
+|`uart_service_c` 操作与状态|`tests/embedded-code-reader/fixtures/uart-dma/src/uart_service.c:12-43`；`uart_dma_rx_done` 是文件内 `static` 函数（`tests/embedded-code-reader/fixtures/uart-dma/src/uart_service.c:16`）|
+|`dma_c` 操作与回调存储|`tests/embedded-code-reader/fixtures/uart-dma/src/dma.c:3-22`|
+|服务模块到 DMA 模块|`tests/embedded-code-reader/fixtures/uart-dma/src/uart_service.c:27-32`|
+|DMA 到已注册回调的分发关系|注册：`tests/embedded-code-reader/fixtures/uart-dma/src/uart_service.c:27-31`；保存：`tests/embedded-code-reader/fixtures/uart-dma/src/dma.c:6-9`；间接调用：`tests/embedded-code-reader/fixtures/uart-dma/src/dma.c:17-21`|
+|模块与回调类型关系|`tests/embedded-code-reader/fixtures/uart-dma/include/dma.h:6,8`；`tests/embedded-code-reader/fixtures/uart-dma/src/dma.c:3,6-9,19-20`|
+
 ## 配置与初始化
 
 `app_config.h` 定义了轮询和 DMA 两个后端值，并将 `UART_RX_BACKEND` 设为 DMA（`tests/embedded-code-reader/fixtures/uart-dma/include/app_config.h:4-6`）。`main.c` 包含该头文件，但 fixture 中没有代码读取 `UART_RX_BACKEND` 或用它进行条件编译；`main()` 无条件调用 UART 服务。因此，这个宏表达了配置值，不能单独证明它控制了实际构建或后端选择（`tests/embedded-code-reader/fixtures/uart-dma/src/main.c:1-8`）。
