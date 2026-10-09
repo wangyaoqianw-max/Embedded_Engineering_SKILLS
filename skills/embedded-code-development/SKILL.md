@@ -1,5 +1,7 @@
 ---
 name: embedded-code-development
+metadata:
+  version: "1.0.1"
 description: Use when implementing, modifying, integrating, or porting code in an existing embedded firmware project, including code work in a fresh CubeMX-generated project that needs Keil project initialization and a pre-edit build baseline. Not for source-only analysis, architecture design, standalone build, unknown runtime debugging, independent testing, or code review.
 ---
 
@@ -24,6 +26,14 @@ description: Use when implementing, modifying, integrating, or porting code in a
 5. Port 模式按需读取 [代码移植与第三方接入](references/code-porting.md)，先确认来源、版本、许可、依赖和适配边界。
 6. 修改完成后调用目标工程实际采用的构建 Skill 或项目指定构建入口。构建 Skill 负责执行构建；本 Skill 负责准备工程输入、判断构建时机、比较基线并修复本次代码或接入造成的问题。
 7. 按用户要求和项目流程验证。报告改动范围、工程文件同步、构建 Target 与结果、已执行测试，以及未执行或无法确认的验证。构建通过不代表硬件行为已验证。
+
+## 可测试性接口实施
+
+- 落实已批准的测试接口和验收约束；需求会改变公共 API 或架构且未确定时，先回到设计阶段。简单功能不自动增加 CLI、Mock 或额外抽象。
+- 测试适配与业务实现分离，复用正式业务 API、已有平台边界和诊断设施；保持 owner task/ISR 约定，不复制状态机，不绕过认证、保护或状态检查。
+- 异步接口明确已接受、已完成和失败的响应，关联请求与最终结果；队列入队成功不作为业务完成证据。按设计实现受控状态恢复，处理未完成请求，避免清除真实业务数据。
+- 测试专用源码、命令注册和配置按现有 Target/Profile 管理，默认从 Release 排除；数值功能开关使用 `#if`。必要产品诊断按需求保留，不强制新增构建类型。
+- 执行与改动相称的模块自测、关键异常路径检查及相关构建；有测试专用功能时检查 Release ELF/MAP 等产物的排除情况。独立测试流程负责完整场景和断言设计；报告已执行项及未验证项，不用诊断日志代替确定性结果，也不把软件注入当作硬件或 EMC 验证。
 
 ## 变更与协作边界
 

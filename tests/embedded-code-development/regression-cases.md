@@ -172,6 +172,16 @@ Ask only to test a completed feature. Route to Test; do not take over implementa
 
 Ask only to review the code for quality issues. Route to Code Review; do not silently fix findings.
 
+## V1.0.1 简单场景检查
+
+- 简单 LED 修改：只实现既定 GPIO 行为，不增加测试 CLI 或扩大公共 API。
+- 已批准的事件注入：适配调用既有队列与业务路径，保留保护检查；实现请求完成反馈和受控恢复，不复制业务状态机。
+- Debug 专用入口：沿用 Debug/Release 配置，同步源码与注册入口排除；Release 产物未实际检查时必须标为未验证，诊断能力按产品要求保留。
+
+修改前文档检查（2026-10-09）：原有接口与工程输入同步规则存在，但未明确测试专用入口、受控恢复、异步完成反馈及 Release 排除检查；未执行修改前模型行为基线。
+
+修改后简单检查（2026-10-09）：人工对照上述三个场景与新增实施约束，规则覆盖通过；显式/隐式调用及设计、只读、构建、独立测试排除边界保留。仅为文档走查，真实触发、固件构建及 Release 产物检查未执行。
+
 ## Baseline execution record
 
 See baseline.md and baseline-output.md. The target Skill did not exist during baseline capture. Record evaluator isolation and platform-level Skill discovery limitations explicitly.
