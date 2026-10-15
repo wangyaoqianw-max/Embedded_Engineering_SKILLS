@@ -182,6 +182,16 @@ Ask only to review the code for quality issues. Route to Code Review; do not sil
 
 修改后简单检查（2026-10-09）：人工对照上述三个场景与新增实施约束，规则覆盖通过；显式/隐式调用及设计、只读、构建、独立测试排除边界保留。仅为文档走查，真实触发、固件构建及 Release 产物检查未执行。
 
+## V1.0.2 简单场景检查
+
+修改前文档基线（2026-10-15）：v1.0.1 已要求自测和测试入口隔离，但未明确初始局部验证清单的实施、非幂等操作的重试约束及物理入口的覆盖说明；未运行模型行为基线。
+
+- 超时恢复：落实批准的期限和重试上限，结果未知的非幂等操作不盲目重发；缺少恢复决策时澄清，不自行改变行为。
+- 解析器实现：按设计实现并执行局部正常、边界、异常及恢复测试，明确结果；不扩大为完整系统测试平台。
+- 物理输入适配：注入调用既有事件路径，保留 owner 与保护检查；按原有配置隔离测试入口，硬件未实测时不声称 GPIO/消抖通过。
+
+修改后人工走查：上述场景均有对应规则；独立测试、只读分析、设计和只构建请求的排除边界保留。真实触发、固件构建与板级行为未验证。
+
 ## Baseline execution record
 
 See baseline.md and baseline-output.md. The target Skill did not exist during baseline capture. Record evaluator isolation and platform-level Skill discovery limitations explicitly.

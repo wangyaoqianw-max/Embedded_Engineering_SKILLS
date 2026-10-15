@@ -1,7 +1,7 @@
 ---
 name: embedded-code-development
 metadata:
-  version: "1.0.1"
+  version: "1.0.2"
 description: Use when implementing, modifying, integrating, or porting code in an existing embedded firmware project, including code work in a fresh CubeMX-generated project that needs Keil project initialization and a pre-edit build baseline. Not for source-only analysis, architecture design, standalone build, unknown runtime debugging, independent testing, or code review.
 ---
 
@@ -31,9 +31,12 @@ description: Use when implementing, modifying, integrating, or porting code in a
 
 - 落实已批准的测试接口和验收约束；需求会改变公共 API 或架构且未确定时，先回到设计阶段。简单功能不自动增加 CLI、Mock 或额外抽象。
 - 测试适配与业务实现分离，复用正式业务 API、已有平台边界和诊断设施；保持 owner task/ISR 约定，不复制状态机，不绕过认证、保护或状态检查。
+- 对已批准的物理操作软件入口，落实事件或业务 API 的注入层级，让物理输入和测试输入汇入同一业务路径；保留硬件链路的独立验证，不自动建设 CLI。
+- 按设计落实输入/状态边界、超时、有界重试、隔离与恢复；非幂等操作结果未知时不能盲目重试，不静默丢错或返回假成功。缺少会改变行为的恢复决策时先澄清。
 - 异步接口明确已接受、已完成和失败的响应，关联请求与最终结果；队列入队成功不作为业务完成证据。按设计实现受控状态恢复，处理未完成请求，避免清除真实业务数据。
 - 测试专用源码、命令注册和配置按现有 Target/Profile 管理，默认从 Release 排除；数值功能开关使用 `#if`。必要产品诊断按需求保留，不强制新增构建类型。
-- 执行与改动相称的模块自测、关键异常路径检查及相关构建；有测试专用功能时检查 Release ELF/MAP 等产物的排除情况。独立测试流程负责完整场景和断言设计；报告已执行项及未验证项，不用诊断日志代替确定性结果，也不把软件注入当作硬件或 EMC 验证。
+- 按初始方案的局部验证设计实现并执行与改动相称的单元测试、模块自测和关键异常路径检查，核对输入、预期结果及通过条件；复杂系统测试的完整方案独立设计，不因测试被称为白盒或灰盒就扩大本次任务。
+- 执行相关构建；有测试专用功能时检查 Release ELF/MAP 等产物的排除情况。报告已执行项及未验证项，不用诊断日志代替确定性结果，也不把软件注入当作硬件或 EMC 验证。
 
 ## 变更与协作边界
 

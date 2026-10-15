@@ -10,6 +10,16 @@
 
 - 初始化仓库治理文件与基础目录。
 
+## embedded-design-decision / embedded-code-development — v1.0.2 — 2026-10-15
+
+### Changed
+
+- 两个 Skill 的 `metadata.version` 更新为 `1.0.2`。
+- 增加按风险裁剪的鲁棒性原则，包括异常边界、有界恢复、非幂等重试限制及失败证据。
+- 初始设计纳入必要的局部验证输入、预期结果、环境和通过条件，由开发阶段落实单元测试和模块自测；复杂测试方案独立设计。
+- 明确物理操作的软件入口、统一业务路径、注入层级与硬件覆盖边界，按需复用接口，不强制建设 CLI。
+- 验证采用简单人工场景走查、结构及差异检查；真实触发、固件构建与板级行为未验证。
+
 ## embedded-design-decision / embedded-code-development — v1.0.1 — 2026-10-09
 
 ### Changed
