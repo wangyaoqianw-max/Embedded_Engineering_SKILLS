@@ -8,7 +8,7 @@
 | 企业级完整固件或大型子系统 | [企业固件](V1.2/enterprise-firmware-v1.2.md) | [V1.1](V1.1/enterprise-firmware-v1.1.md) | [V1.0](V1.0/enterprise-firmware-v1.md) |
 | 既有固件的功能、模块与缺陷变更 | [模块开发](V1.2/existing-module-v1.2.md) | [V1.1](V1.1/existing-module-v1.1.md) | [V1.0](V1.0/existing-module-v1.md) |
 
-**V1.2 专题说明**：[工程文档体系与交付约定](V1.2/documentation-guidelines-v1.2.md)。
+**V1.2 专题说明**：[工程文档体系与交付约定](V1.2/documentation-guidelines-v1.2.md) · [模型无关的 AI 工程执行与交接约定](V1.2/model-agnostic-ai-execution-v1.2.md)。
 
 ## V1.2 新增：文档生命周期
 
@@ -26,6 +26,10 @@
 **内层（每个切片）**：**Design 局部设计 → Implement 最小实现 → Verify 实际测试 → Feedback 纠偏与关闭/文档检查**，再进入下一切片。单项简单任务可只有一个切片。切片 FAIL 返回设计或编码；BLOCKED 记录环境阻碍；公共接口变化回外层；所有片完成后仍需跨模块集成、回归、审查与交付。
 
 每片最小记录：目标、非目标、接口/资源边界、验收输入和预期、Host/板级测试环境、构建 Target、实际结果（PASS/FAIL/BLOCKED）、证据及未测项。**编译成功 ≠ Host 测试通过 ≠ 板级测试通过 ≠ 系统回归完成**。
+
+## V1.2 补充：模型无关执行与交接
+
+将需求、已批准设计、接口约束、任务状态和验证证据存入可追踪工程资产，而不是依赖某个模型的聊天记忆。跨模型接续时以仓库基线与任务契约为输入，以真实测试结果为验收；模型和 Agent 的工具能力不同，应先核对权限与环境。详见上方专题规范。
 
 ## 当前已有的 5 个 Skill
 
